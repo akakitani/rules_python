@@ -48,7 +48,11 @@ def _pip_import_impl(repository_ctx):
         ]
 
     # To see the output, pass: quiet=False
-    result = repository_ctx.execute(args, timeout=repository_ctx.attr.timeout)
+    result = repository_ctx.execute(
+        args,
+        environment=repository_ctx.attr.environment,
+        timeout=repository_ctx.attr.timeout,
+    )
 
     if result.return_code:
         fail("pip_import failed: %s (%s)" % (result.stdout, result.stderr))
@@ -73,6 +77,7 @@ python_interpreter.
             allow_single_file = True,
             doc = "The label of the requirements.txt file.",
         ),
+        "environment": attr.string_dict(),
         "timeout": attr.int(
             default = 600,
             doc = "Timeout (in seconds) for repository fetch."
